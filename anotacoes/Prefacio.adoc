@@ -1,0 +1,23 @@
+:xrefstyle: short
+:example-number: 0
+:figure-number: 0
+:figure-caption: Figura
+:example-caption: Exemplo
+:table-caption: Tabela
+:section-caption: Seção
+:chapter-caption: Capítulo
+:part-caption: Parte
+
+[[prefacio]]
+
+== Prefácio
+
+=== Material Original
+
+Anotações feitas referenciando o capítulo xref:../Prefacio.adoc#[Prefácio] do livro original.
+
+=== Anotações Prefácio
+
+. O livro utiliza a versão Python 3.10 para os exemplos e discussões abordadas.
+. "muitos desenvolvedores continuam escrevendo código Python com um forte sotaque das linguagens que aprenderam antes"
+. "só sentimos falta daquilo que conhecemos", ve as features não disponiveis na linguagem mas não usa as coisas que estão disponiveis.

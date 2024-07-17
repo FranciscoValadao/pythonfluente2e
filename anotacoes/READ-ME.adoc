@@ -1,0 +1,19 @@
+:xrefstyle: short
+:example-number: 0
+:figure-number: 0
+:figure-caption: Figura
+:example-caption: Exemplo
+:table-caption: Tabela
+:section-caption: Seção
+:chapter-caption: Capítulo
+:part-caption: Parte
+
+== READ-ME
+
+Os arquivos aqui contidos serão utilizados para as anotações feitas durante os encontros de discussão do Livro Fluent Python por Luciano Ramalho, 2a Edição.
+
+As anotações serão feitas utilizando os arquivos do tipo Ascii Doc, referenciando o material original.
+
+Capítulos feitos até então:
+
+. xref:Prefacio.adoc[Prefacio]

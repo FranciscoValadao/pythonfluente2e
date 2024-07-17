@@ -1,0 +1,116 @@
+:xrefstyle: short
+:example-number: 0
+:figure-number: 0
+:figure-caption: Figura
+:example-caption: Exemplo
+:table-caption: Tabela
+:section-caption: Seção
+:chapter-caption: Capítulo
+:part-caption: Parte
+
+[[data_model]]
+
+== O modelo de dados do Python
+
+=== Material Original
+
+Anotações feitas referenciando o capítulo xref:../capitulos/cap01.adoc#[O modelo de dados do Python] do livro original.
+
+=== Anotações O Modelo de Dados de Python
+
+==== Resumo
+
+* Modelo da dados de Python (também referido como Modelo de Objeto) é a API que usamos para fazer nossos objetos lidarem bem com os aspectos mais idiomáticos da linguagem (leia-se tornar nosso código mais *Pythonico*)
+* Para isso utilizamos dos métodos dunder (também referidos como mágicos ou especiais). Dunder de "double underscore before and after", `+__*__+`.
+
+> Se você aprendeu outra linguagem orientada a objetos antes do Python, pode achar estranho usar `len(collection)` em vez de `collection.len()` 
+
+* Porém o uso dos metódos dunder permite o uso das funções padrões do Python (como o `len()` ou `str()`) sem ter que definir especificamente este metódo em sua classe. Isso é o que cria a "facilidade" de se aprender Python, e torna intuitivo o uso de novas classes.
+
+> A primeira coisa para se saber sobre os métodos especiais é que eles foram feitos para serem chamados pelo *interpretador Python, e não por você*.
+
+* Você não escreve `my_object.__len__()`. Escreve `len(my_object)` e, se my_object é uma instância de uma classe definida pelo usuário, então o Python chama o método __len__ que você implementou.
+** Em resumo, caso seja necessário sobrescrever um metodo especial. pode declará-lo em sua classe e o Python irá chamá-lo prioritariamente.
+** Em adição, se my_object é uma instância de algum dos objetos de python baseados em PyVarObj (como `list`, `str`, `bytearray`, ...) que aceitam o metodo `len()`, `len(my_object)` lê o valor do campo ob_size (existente dentro da struct em CPython), e isso é muito mais rápido que chamar um método criado em uma classe. !!!!otimização!!!!
+
+* Em condições normais, seu código não deveria conter muitas chamadas diretas a métodos especiais. A menos que você esteja fazendo muita metaprogramação, *implementar métodos especiais deve ser muito mais frequente que invocá-los explicitamente*.
+
+* Uma boa base para compreensão do uso e definição dos métodos dunder é a classe Vetor definida abaixo:
+
+[[ex_vector2d]]
+.A simple two-dimensional vector class
+====
+[source, python3]
+----
+include::../capitulos/code/01-data-model/vector2d.py[]
+----
+====
+
+* Com os métodos definidos, é possivel então utilizar as funções padrões de Python. Um exemplo abaixo:
+
+[source, pycon]
+----
+>>> v1 = Vector(2, 4)
+>>> v2 = Vector(2, 1)
+>>> v1 + v2
+Vector(4, 5)
+----
+
+    Em que o operador `+` produz um novo objeto `Vector(4, 5)`.
+
+* Essa forma de "sobrescrever" métodos e operadores torna nossas classes e códigos mais fáceis de serem utilizados e mais Pythonicos
+
+* Os métodos sobrescritos pelo exemplo acima e as funções que estes representam podem ser vistos na tabela abaixo:
+
+[cols="1,1,1"]
+|===
+|Método Dunder|Função/Operação do Python|Descrição
+
+|`+__repr__+`
+|`f"{obj!r}"` ou repr(obj)
+|Representação do Objeto
+
+|`+__bool__+`
+|`bool(obj)` ou `if obj:`
+|Conversão para Booleano
+
+|`+__abs__+`
+|abs(obj)
+|Valor Absoluto
+
+|`+__add__+`
+|obj + other_obj
+|Operação de Adição 
+
+|`+__mult__+`
+|obj * other_obj
+|operação de Multiplicação 
+|===
+
+* `+__repr__+` &#8800; `+__str__+`
+** `+__repr__+`:
+*** É chamado quando usamos o `!r` em strings formatadas ou quando chamamos a função `repr()`
+*** Não deve ser ambíguo (entenda-se como deve ser identificavel como objeto único, como a função padrão que retorna com uma ID do objeto)
+*** Se possível, deve ser escrito da mesma forma que a classe seria definida (como `Vector(2, 5)`) para que seja possível redefinilo
+*** !!! *Zen do Python* Praticidade vence a Pureza
+**** Na maioria das vezes em situações reais é muito dificil ter uma representação que seja igual a como o objeto seria definido. Deve-se sempre focar na parte de não ser ambíguo e ainda legível.
+** `+__str__+`:
+*** Devem ser algo apropriado para ser exibido ao usuario final.
+** Caso `+__repr__+` seja definido mas `+__str__+` não, o interpretador doo Python irá utilizar o `+__repr__+` em casos que o `+__str__+` fosse ser chamado. Mas o contrário *não* é verdadeiro.
+** DEVs que vem de outras linguagens costumam definir o `+__str__+` apenas, porém no Python o `+__repr__+` é mais significativo, uma que vez que pode ser usado no lugar do `+__str__+`
+
+[source, pycon]
+----
+>>>a = Vector(2, 5)
+>>>repr(a)
+>>><obj Vector at 0x10e100070>
+>>>b = Vector(2, 5)
+>>>repr(b)
+>>><obj Vector at 0x10e10007A>
+
+----
+    Mesmo que a e b sejam iguais, a representação deles é diferente (não ambígua) no caso padrão em que não sobrescrevemos o metodo `+__repr__+` original. No novo caso elas seriam iguais.
+
+
+* `+__bool__+` -> bool(obj):
+** O Python aceita qualquer objeto em um contexto booleano.,
